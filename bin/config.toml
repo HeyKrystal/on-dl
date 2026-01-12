@@ -1,0 +1,43 @@
+# OnDL configuration (TOML)
+# Copy to 'config.toml' next to consume.py and customize.
+# Tip: keep secrets like webhook_url out of git (add config.toml to .gitignore).
+
+[ondl]
+# Where user-visible downloads go.
+# - Default (blank): ~/Downloads/OnDL
+# - Can be a mounted network share path, e.g. /Volumes/PlexMedia/OnDL
+download_root = "/Volumes/Media/Sources/OnDL"
+
+# Where runtime state goes (queue, logs, previews, yt-dlp archive).
+# - Default (blank): OS-specific (macOS: ~/Library/Application Support/OnDL)
+state_root = ""
+
+[queue]
+max_per_run = 1
+job_glob = "*.dljob"
+
+# Startup reaper...
+stale_processing_minutes = 120
+stale_processing_action = "requeue"   # or "error"
+
+[preview]
+enabled = true
+duration_seconds = 5
+fps = 12
+width = 480
+max_bytes = 7864320  # ~7.5MB
+
+[discord]
+webhook_url = ""     # set this to your Discord webhook URL
+username = "OnDL"
+avatar_url = "https://raw.githubusercontent.com/HeyKrystal/on-dl/main/resources/on-dl-logo.png"      # optional: hosted image URL
+
+[tools]
+# Optional explicit tool paths. Prefer env vars for per-host overrides:
+# ONDL_YTDLP, ONDL_FFMPEG, ONDL_FFPROBE, ONDL_CURL
+# Leave empty to auto-resolve via PATH.
+ytdlp = ""
+ffmpeg = ""
+ffprobe = ""
+curl = ""
+
