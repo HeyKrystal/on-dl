@@ -70,6 +70,7 @@ class DiscordConfig:
     webhook_url: str = ""
     username: str = ""
     avatar_url: str = ""
+    author_icon_url: str = ""
 
 
 @dataclass(frozen=True)
@@ -135,6 +136,7 @@ def load_config(script_path: Path) -> Tuple[OnDLConfig, Path]:
     webhook_url=_env("ONDL_DISCORD_WEBHOOK_URL") or str(discord_tbl.get("webhook_url", "")).strip(),
     username=str(discord_tbl.get("username", "")).strip(),
     avatar_url=str(discord_tbl.get("avatar_url", "")).strip(),
+    author_icon_url=str(discord_tbl.get("author_icon_url", "")).strip(),
 )
 
     out = OnDLConfig(

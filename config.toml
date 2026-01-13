@@ -13,7 +13,7 @@ download_root = "/Volumes/Media/Sources/OnDL"
 state_root = ""
 
 [queue]
-max_per_run = 2
+max_per_run = 1
 job_glob = "*.dljob"
 
 # Startup reaper...
@@ -23,14 +23,15 @@ stale_processing_action = "requeue"   # or "error"
 [preview]
 enabled = true
 duration_seconds = 5
-fps = 24
+fps = 48
 width = 480
 gif_max_bytes = 8388608  # ~8MB
 
 [discord]
 webhook_url = ""     # set this to your Discord webhook URL
-username = "OnDL"
-avatar_url = "https://raw.githubusercontent.com/HeyKrystal/on-dl/main/resources/on-dl-logo.png"      # optional: hosted image URL
+username = "FrostedStoat"
+avatar_url = "https://cdn-icons-png.flaticon.com/512/2/2235.png"    # optional: hosted image URL
+author_icon_url = ""      
 
 [tools]
 # Optional explicit tool paths. Prefer env vars for per-host overrides:

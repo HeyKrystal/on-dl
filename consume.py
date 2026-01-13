@@ -103,8 +103,16 @@ def main() -> int:
             embed = {
                 "title": meta.title,
                 "url": meta.webpage_url,
-                "description": f"Downloaded and queued preview (starts at ~{start:.2f}s).",
+                "description": f"Downloaded and rendered preview (starts at ~{start:.2f}s).",
                 "color": success_green,
+                "author": {
+                    "name": "📥 DOWNLOAD FINISHED",
+                    "icon_url": cfg.discord.author_icon_url,
+                },
+                "footer": {
+                    "text": "FrostedStoat • OnDL"
+                    #"icon_url": "https://i.imgur.com/AfFp7pu.png"
+                },
                 "fields": [
                     {"name": "Channel", "value": meta.channel or meta.uploader or "unknown", "inline": True},
                     {"name": "Duration", "value": fmt_dur(meta.duration), "inline": True},
@@ -128,7 +136,7 @@ def main() -> int:
 
             dark_red = 0x992d22
 
-            discord_post(cfg.discord, content="📥 **OnDL download complete**", embed=embed, gif_path=gif_path)
+            discord_post(cfg.discord, content="", embed=embed, gif_path=gif_path)
 
             ok = True
         except Exception:
@@ -141,7 +149,6 @@ def main() -> int:
 
     print(f"== consume end {datetime.now().isoformat()} processed={processed} ==")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

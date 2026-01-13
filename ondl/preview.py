@@ -72,7 +72,8 @@ def make_preview_gif(
             "-t", f"{seconds:.3f}",
             "-i", str(video_path),
             "-i", str(palette),
-            "-lavfi", f"fps={cur_fps},scale={cur_width}:-1:flags=lanczos[x];[x][1:v]paletteuse",
+            #"-lavfi", f"fps={cur_fps},scale={cur_width}:-1:flags=lanczos[x];[x][1:v]paletteuse",
+            "-lavfi", f"fps={fps},scale={width}:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=3",
             str(out_gif),
         ], capture=True, check=True)
 
