@@ -13,7 +13,7 @@ download_root = "/Volumes/Media/Sources/OnDL"
 state_root = ""
 
 [queue]
-max_per_run = 1
+max_per_run = 2
 job_glob = "*.dljob"
 
 # Startup reaper...
@@ -23,9 +23,9 @@ stale_processing_action = "requeue"   # or "error"
 [preview]
 enabled = true
 duration_seconds = 5
-fps = 12
+fps = 24
 width = 480
-max_bytes = 7864320  # ~7.5MB
+gif_max_bytes = 8388608  # ~8MB
 
 [discord]
 webhook_url = ""     # set this to your Discord webhook URL

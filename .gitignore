@@ -1,2 +1,10 @@
+# macOS system files
+/__MACOSX
 .DS_Store
+
+# Retired files
 /retired
+
+# Python bytecode
+/__pycache__
+*.pyc
