@@ -135,7 +135,28 @@ def main() -> int:
 
             dark_red = 0x992d22
 
-            discord_post(cfg.discord, content="", embed=embed, gif_path=gif_path)
+            try:
+                discord_post(cfg.discord, content="", embed=embed, gif_path=gif_path)
+            except Exception as e:
+                # Discord notifications must never fail the job.
+                # Log and continue.
+                err_detail = f"{type(e).__name__}: {e}"
+
+                # If it's a urllib HTTP error, try to show status + response body
+                try:
+                    import urllib.error
+                    if isinstance(e, urllib.error.HTTPError):
+                        body = ""
+                        try:
+                            body = e.read().decode("utf-8", errors="replace")
+                        except Exception:
+                            body = ""
+                        err_detail = f"HTTP {e.code} {e.reason}; body={body[:500]!r}"
+                except Exception:
+                    pass
+
+                print(f"[warn] Discord webhook failed: {err_detail}", file=sys.stderr)
+
 
             ok = True
         except Exception:
