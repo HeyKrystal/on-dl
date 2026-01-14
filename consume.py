@@ -67,7 +67,6 @@ def main() -> int:
             meta = get_youtube_meta(ytdlp, job.url)
 
             # staging layout: <category>/<uploader>/
-            # staging_dir = paths.staging_root / job.category / (meta.uploader or "unknown")
             staging_dir = paths.staging_root / (meta.uploader or "unknown")
             video_path = download_youtube_to_dir(ytdlp, ffmpeg, job.url, staging_dir, paths.archive)
             size_mb = video_path.stat().st_size / (1024 * 1024)
