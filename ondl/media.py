@@ -35,30 +35,51 @@ def download_youtube_to_dir(ytdlp: Path, ffmpeg: Path, url: str, out_dir: Path, 
         "--convert-thumbnails", "jpg",
         "--download-archive", str(archive_path),
         "--ffmpeg-location", str(ffmpeg),
+
+        # 🔒 Make stdout predictable: only our printed fields
+        "-q",
+        "--no-warnings",
         "--print", "after_move:filepath",
+
         "--windows-filenames",
         "-o", str(output_tmpl),
         url,
     ]
     cp = run(cmd, capture=True, check=False)
     if cp.returncode != 0:
-        raise RuntimeError(f"yt-dlp failed (exit={cp.returncode})\nstdout:\n{cp.stdout}\nstderr:\n{cp.stderr}")
+        raise RuntimeError(
+            f"yt-dlp failed (exit={cp.returncode})\nstdout:\n{cp.stdout}\nstderr:\n{cp.stderr}"
+        )
 
-    # Heuristic: last existing path printed by yt-dlp (your previous approach)
-    candidates = [ln.strip() for ln in cp.stdout.splitlines() if ln.strip()]
-    for ln in reversed(candidates):
-        p = Path(ln)
+    # ✅ Primary: yt-dlp told us the final path
+    out_lines = [ln.strip() for ln in (cp.stdout or "").splitlines() if ln.strip()]
+    if out_lines:
+        p = Path(out_lines[-1])
+
+        # Sometimes the printed path can be relative (rare, but cheap to handle)
+        if not p.is_absolute():
+            p = (out_dir / p).resolve()
+
         if p.exists():
-            # rename thumbnail: foo.jpg -> foo-poster.jpg (Plex-friendly)
             tp = p.with_suffix(".jpg")
             if tp.exists():
                 poster = tp.with_name(f"{tp.stem}-poster{tp.suffix}")
                 tp.rename(poster)
             return p
 
-    # If stdout didn't include paths, find the newest video-ish file
+    # Fallback: scan the directory for the newest non-sidecar file
     vids = sorted(out_dir.glob("*"), key=lambda x: x.stat().st_mtime, reverse=True)
     for f in vids:
-        if f.suffix.lower() not in (".jpg", ".json", ".part", ".tmp"):
+        if f.suffix.lower() not in (".jpg", ".json", ".part", ".tmp", ".webp"):
+            # try thumbnail rename even in fallback mode
+            tp = f.with_suffix(".jpg")
+            if tp.exists():
+                poster = tp.with_name(f"{tp.stem}-poster{tp.suffix}")
+                tp.rename(poster)
             return f
-    raise RuntimeError("yt-dlp succeeded but could not locate output file")
+
+    raise RuntimeError(
+        "yt-dlp succeeded but could not locate output file\n"
+        f"stdout:\n{cp.stdout}\n"
+        f"stderr:\n{cp.stderr}"
+    )
