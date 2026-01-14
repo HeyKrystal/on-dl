@@ -91,8 +91,6 @@ def _archive_keyline(ytdlp: Path, url: str) -> Optional[str]:
 
 
 def _archive_contains(archive_path: Path, keyline: str) -> bool:
-
-    print(f"Test: {keyline}")
     try:
         with archive_path.open("r", encoding="utf-8", errors="replace") as f:
             for ln in f:
