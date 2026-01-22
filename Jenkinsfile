@@ -25,7 +25,7 @@ pipeline {
     // Jenkins Credential IDs (create these in Jenkins)
     DEPLOY_TARGETS_JSON_CRED = 'deploy-target-frostedstoat' // Secret Text JSON (your map of targets)
     FROSTED_SSH_CRED         = 'ssh-frostedstoat'           // SSH Username with private key
-    DISCORD_WEBHOOK_CRED     = 'discord-webhook-ondl'       // Secret Text (Discord webhook URL)
+    DISCORD_WEBHOOK_CRED     = 'krystal-net-webhook-url'       // Secret Text (Discord webhook URL)
   }
 
   stages {
