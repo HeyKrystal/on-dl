@@ -48,6 +48,7 @@ pipeline {
           # Run validation inside a fresh container on the agent
           docker run --rm -t \
             -u "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
             -v "$PWD:/work" -w /work \
             "$PY_IMAGE" \
             sh -lc '
