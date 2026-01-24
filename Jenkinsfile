@@ -47,6 +47,7 @@ pipeline {
 
           # Run validation inside a fresh container on the agent
           docker run --rm -t \
+            -u "$(id -u):$(id -g)" \
             -v "$PWD:/work" -w /work \
             "$PY_IMAGE" \
             sh -lc '
@@ -95,6 +96,7 @@ pipeline {
               --exclude="@tmp" \
               --exclude="**/__pycache__" \
               --exclude=".venv" \
+              --exclude=".ruff_cache" \
               -czf "$ARTIFACT" .
         '''
 
