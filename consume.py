@@ -99,6 +99,7 @@ def main() -> int:
 
             # Discord
             success_green = 0x2ECC71
+            warning_yellow = 0xF1C40F
             embed = {
                 "title": meta.title,
                 "url": meta.webpage_url,
@@ -125,15 +126,14 @@ def main() -> int:
                     "name": "⚠️ Storage Fallback Used",
                     "value": "Download root unavailable; file saved locally. Check logs for details.",
                     "inline": False,
-            })
+                })
+                embed["color"] = warning_yellow
 
             if meta.thumbnail:
                 embed["thumbnail"] = {"url": meta.thumbnail}
                 
             if gif_path is not None:
                 embed["image"] = {"url": f"attachment://{gif_path.name}"}
-
-            dark_red = 0x992d22
 
             try:
                 discord_post(cfg.discord, content="", embed=embed, gif_path=gif_path)

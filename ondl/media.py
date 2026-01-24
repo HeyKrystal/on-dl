@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .models import Meta
-from .util import run, sanitize_filename
+from .util import run
 
 
 def get_youtube_meta(ytdlp: Path, url: str) -> Meta:
