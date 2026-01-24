@@ -1,4 +1,4 @@
-@Library('jenkins-pipeline-helper-shared-library') _
+@Library('jenkins-pipeline-helper-shared-library@main') _
 
 import groovy.json.JsonSlurperClassic
 import groovy.json.JsonOutput
