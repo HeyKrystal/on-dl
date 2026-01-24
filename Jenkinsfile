@@ -94,10 +94,10 @@ pipeline {
         script {
           def sha = sh(script: "cat GIT_COMMIT.txt | cut -c1-12", returnStdout: true).trim()
           env.SHORT_SHA = sha
+          env.RELEASE_TAG = "ondl-${env.BRANCH_NAME}-${env.BUILD_NUMBER}-${sha}"
           env.ARTIFACT_LOCATION = "dist/"
           env.ARTIFACT_NAME = "${env.RELEASE_TAG}.tar.gz"
           env.ARTIFACT_PATH = "${env.ARTIFACT_LOCATION}${env.ARTIFACT_NAME}"
-          env.RELEASE_TAG = "ondl-${env.BRANCH_NAME}-${env.BUILD_NUMBER}-${sha}"
         }
 
         sh '''
@@ -160,8 +160,8 @@ pipeline {
               command -v curl  >/dev/null 2>&1 || echo 'WARN: curl not found in PATH on FrostedStoat'
 
               mkdir -p '$T_RELEASE_DIR'
-              tar -xzf '/tmp/$ARTIFACT_PATH' -C '$T_RELEASE_DIR'
-              rm -f '/tmp/$ARTIFACT_PATH'
+              tar -xzf '/tmp/$ARTIFACT_NAME' -C '$T_RELEASE_DIR'
+              rm -f '/tmp/$ARTIFACT_NAME'
 
               # Atomic-ish cutover: update the symlink in one operation
               ln -sfn '$T_RELEASE_DIR' '$T_CURRENT_LINK'
