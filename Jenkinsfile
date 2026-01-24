@@ -1,3 +1,4 @@
+// For helper calls.
 @Library('jenkins-pipeline-helper-shared-library@main') _
 
 import groovy.json.JsonSlurperClassic
@@ -13,7 +14,7 @@ pipeline {
 
   environment {
     // Repo name used for deploy path: ${deployRoot}/${REPO_NAME}
-    REPO_NAME = repoName()
+    REPO_NAME = helper.repoName()
 
     // Container used for validate steps
     PY_IMAGE = 'python:3.12-slim'
