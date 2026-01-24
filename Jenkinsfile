@@ -14,7 +14,7 @@ pipeline {
 
   environment {
     // Repo name used for deploy path: ${deployRoot}/${REPO_NAME}
-    REPO_NAME = helper.repoName()
+    //REPO_NAME = helper.repoName()
 
     // Container used for validate steps
     PY_IMAGE = 'python:3.12-slim'
@@ -118,7 +118,7 @@ pipeline {
             env.T_DEPLOY_ROOT = "${t.deployRoot}"
 
             // Derived paths
-            env.T_APP_DIR = "${env.T_DEPLOY_ROOT}/${env.REPO_NAME}"
+            env.T_APP_DIR = "${env.T_DEPLOY_ROOT}/${helper.repoName()}"
             env.T_RELEASES_DIR = "${env.T_APP_DIR}/releases"
             env.T_RELEASE_DIR = "${env.T_RELEASES_DIR}/${env.RELEASE_TAG}"
             env.T_CURRENT_LINK = "${env.T_APP_DIR}/current"
