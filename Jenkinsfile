@@ -65,8 +65,12 @@ pipeline {
               # Lint (ruff) - fail build if lint fails
               python -m ruff --version >/dev/null 2>&1 && python -m ruff check .
 
-              # Tests (pytest) - fail build if tests fail
-              python -m pytest --version >/dev/null 2>&1 && python -m pytest -q --disable-warnings --maxfail=1
+              # Tests (pytest) - run only if tests exist
+              if find . -type f \( -name 'test_*.py' -o -name '*_test.py' \) | grep -q .; then
+                python -m pytest -q --disable-warnings --maxfail=1
+              else
+                echo "No tests found; skipping pytest."
+              fi
 
               # Extra sanity: ensure files compile
               python -m compileall -q .
