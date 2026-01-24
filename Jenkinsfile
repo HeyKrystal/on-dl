@@ -43,7 +43,7 @@ pipeline {
     stage('Validate (lint + tests)') {
       steps {
         sh '''
-          set -eu
+          set -eux
 
           # Run validation inside a fresh container on the agent
           docker run --rm -t \
@@ -99,16 +99,17 @@ pipeline {
         }
 
         sh '''
-          set -eu
           # Create a deployable tarball from the checked-out workspace
+          set -eux
+          tmp="/tmp/$ARTIFACT"
           tar --exclude=".git" \
               --exclude="@tmp" \
               --exclude="**/__pycache__" \
               --exclude=".venv" \
               --exclude=".ruff_cache" \
-              -czf "$ARTIFACT" .
+              -czf "$tmp" .
+          mv "$tmp" "$ARTIFACT"
         '''
-
         archiveArtifacts artifacts: "${ARTIFACT},GIT_COMMIT.txt", fingerprint: true
       }
     }
@@ -141,11 +142,11 @@ pipeline {
           }
 
           sh '''
-            set -eu
+            set -eux
 
             # Make sure target dirs exist
             ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$T_USER@$T_HOST" "
-              set -eu
+              set -eux
               mkdir -p '$T_RELEASES_DIR'
             "
 
@@ -155,7 +156,7 @@ pipeline {
 
             # Extract to new release dir, flip current symlink, keep last N releases
             ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$T_USER@$T_HOST" "
-              set -eu
+              set -eux
 
               # Optional runtime preflight (doesn't reinstall anything)
               command -v ffmpeg >/dev/null 2>&1 || echo 'WARN: ffmpeg not found in PATH on FrostedStoat'
@@ -238,7 +239,7 @@ pipeline {
         withCredentials([string(credentialsId: "${DISCORD_WEBHOOK_CRED}", variable: 'DISCORD_WEBHOOK_URL')]) {
           // Use curl from the agent host (not inside a container)
           sh """
-            set -eu
+            set -eux
             #curl -sS -H 'Content-Type: application/json' -d '${payload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
           """
         }
