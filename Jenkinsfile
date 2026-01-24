@@ -94,17 +94,18 @@ pipeline {
         script {
           def sha = sh(script: "cat GIT_COMMIT.txt | cut -c1-12", returnStdout: true).trim()
           env.SHORT_SHA = sha
+          env.ARTIFACT_FILE = "${env.RELEASE_TAG}.tar.gz"
+          env.ARTIFACT_PATH = "distro/${env.ARTIFACT_FILE}"
           env.RELEASE_TAG = "ondl-${env.BRANCH_NAME}-${env.BUILD_NUMBER}-${sha}"
-          env.ARTIFACT = "${env.RELEASE_TAG}.tar.gz"
         }
 
         sh '''
           # Create a deployable tarball from the checked-out workspace
           set -eux
           mkdir -p distro
-          git ls-files -z | tar --null -T - -czf "distro/$ARTIFACT"
+          git ls-files -z | tar --null -T - -czf "$ARTIFACT_PATH"
         '''
-        archiveArtifacts artifacts: "${ARTIFACT},GIT_COMMIT.txt", fingerprint: true
+        archiveArtifacts artifacts: "${ARTIFACT_PATH},GIT_COMMIT.txt", fingerprint: true
       }
     }
 
@@ -144,9 +145,9 @@ pipeline {
               mkdir -p '$T_RELEASES_DIR'
             "
 
-            # Copy artifact to target temp
-            scp -i "$SSH_KEY" -o StrictHostKeyChecking=no "$ARTIFACT" \
-              "$T_USER@$T_HOST:/tmp/$ARTIFACT"
+            # Copy the artifact to target temp
+            scp -i "$SSH_KEY" -o StrictHostKeyChecking=no "$ARTIFACT_PATH" \
+              "$T_USER@$T_HOST:/tmp/$ARTIFACT_PATH"
 
             # Extract to new release dir, flip current symlink, keep last N releases
             ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$T_USER@$T_HOST" "
@@ -158,8 +159,8 @@ pipeline {
               command -v curl  >/dev/null 2>&1 || echo 'WARN: curl not found in PATH on FrostedStoat'
 
               mkdir -p '$T_RELEASE_DIR'
-              tar -xzf '/tmp/$ARTIFACT' -C '$T_RELEASE_DIR'
-              rm -f '/tmp/$ARTIFACT'
+              tar -xzf '/tmp/$ARTIFACT_PATH' -C '$T_RELEASE_DIR'
+              rm -f '/tmp/$ARTIFACT_PATH'
 
               # Atomic-ish cutover: update the symlink in one operation
               ln -sfn '$T_RELEASE_DIR' '$T_CURRENT_LINK'
@@ -234,7 +235,7 @@ pipeline {
           // Use curl from the agent host (not inside a container)
           sh """
             set -eux
-            #curl -sS -H 'Content-Type: application/json' -d '${payload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
+            curl -sS -H 'Content-Type: application/json' -d '${payload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
           """
         }
       }
