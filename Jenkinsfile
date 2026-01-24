@@ -49,26 +49,34 @@ pipeline {
           docker run --rm -t \
             -u "$(id -u):$(id -g)" \
             -e HOME=/tmp \
+            -e PIP_CACHE_DIR=/tmp/pip-cache \
+            -e PATH="/tmp/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
             -v "$PWD:/work" -w /work \
             "$PY_IMAGE" \
             sh -lc '
               set -eu
+
+              # If an old root-owned cache exists, avoid using it at all.
+              # Deleting may fail if it's root-owned; ignore that.
+              rm -rf .ruff_cache || true
+
               python --version
               python -m pip install --upgrade pip
 
-              # Install project + dev deps (you created both files)
+              # Install project + dev deps (if present)
               if [ -f requirements.txt ]; then
-                pip install -r requirements.txt
+                python -m pip install -r requirements.txt
               fi
+
               if [ -f requirements-dev.txt ]; then
-                pip install -r requirements-dev.txt
+                python -m pip install -r requirements-dev.txt
               fi
 
               # Lint (ruff) - fail build if lint fails
-              python -m ruff --version >/dev/null 2>&1 && python -m ruff check .
+              python -m ruff --version >/dev/null 2>&1 && python -m ruff check . --no-cache
 
               # Tests (pytest) - run only if tests exist
-              if find . -type f \\( -name 'test_*.py' -o -name '*_test.py' \\) -print -quit 2>/dev/null | grep -q .; then
+              if find . -type f \\( -name "test_*.py" -o -name "*_test.py" \\) -print -quit 2>/dev/null | grep -q .; then
                 python -m pytest -q --disable-warnings --maxfail=1
               else
                 echo "No tests found; skipping pytest."
