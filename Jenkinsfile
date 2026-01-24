@@ -101,14 +101,8 @@ pipeline {
         sh '''
           # Create a deployable tarball from the checked-out workspace
           set -eux
-          tmp="/tmp/$ARTIFACT"
-          tar --exclude=".git" \
-              --exclude="@tmp" \
-              --exclude="**/__pycache__" \
-              --exclude=".venv" \
-              --exclude=".ruff_cache" \
-              -czf "$tmp" .
-          mv "$tmp" "$ARTIFACT"
+          mkdir -p distro
+          git ls-files -z | tar --null -T - -czf "distro/$ARTIFACT"
         '''
         archiveArtifacts artifacts: "${ARTIFACT},GIT_COMMIT.txt", fingerprint: true
       }
