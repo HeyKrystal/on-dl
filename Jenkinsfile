@@ -94,15 +94,16 @@ pipeline {
         script {
           def sha = sh(script: "cat GIT_COMMIT.txt | cut -c1-12", returnStdout: true).trim()
           env.SHORT_SHA = sha
-          env.ARTIFACT_FILE = "${env.RELEASE_TAG}.tar.gz"
-          env.ARTIFACT_PATH = "distro/${env.ARTIFACT_FILE}"
+          env.ARTIFACT_LOCATION = "dist/"
+          env.ARTIFACT_NAME = "${env.RELEASE_TAG}.tar.gz"
+          env.ARTIFACT_PATH = "${env.ARTIFACT_LOCATION}${env.ARTIFACT_NAME}"
           env.RELEASE_TAG = "ondl-${env.BRANCH_NAME}-${env.BUILD_NUMBER}-${sha}"
         }
 
         sh '''
           # Create a deployable tarball from the checked-out workspace
           set -eux
-          mkdir -p distro
+          mkdir -p $ARTIFACT_LOCATION
           git ls-files -z | tar --null -T - -czf "$ARTIFACT_PATH"
         '''
         archiveArtifacts artifacts: "${ARTIFACT_PATH},GIT_COMMIT.txt", fingerprint: true
@@ -147,7 +148,7 @@ pipeline {
 
             # Copy the artifact to target temp
             scp -i "$SSH_KEY" -o StrictHostKeyChecking=no "$ARTIFACT_PATH" \
-              "$T_USER@$T_HOST:/tmp/$ARTIFACT_PATH"
+              "$T_USER@$T_HOST:/tmp/$ARTIFACT_NAME"
 
             # Extract to new release dir, flip current symlink, keep last N releases
             ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$T_USER@$T_HOST" "
