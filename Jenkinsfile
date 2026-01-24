@@ -57,7 +57,7 @@ pipeline {
               set -eux
 
               # If an old root-owned cache exists, avoid using it at all.
-              # Deleting may fail if it's root-owned; ignore that.
+              # Deleting may fail if it is root-owned; ignore that.
               rm -rf .ruff_cache || true
 
               python --version
@@ -74,10 +74,6 @@ pipeline {
 
               # Lint (ruff) - fail build if lint fails
               python -m ruff --version >/dev/null 2>&1 && python -m ruff check . --no-cache
-
-              command -v find || echo "find not installed"
-              command -v grep || echo "grep not installed"
-
 
               # Tests (pytest) - run only if tests exist
               if find . -type f \\( -name "test_*.py" -o -name "*_test.py" \\) -print -quit 2>/dev/null | grep -q .; then
@@ -243,7 +239,7 @@ pipeline {
           // Use curl from the agent host (not inside a container)
           sh """
             set -eu
-            curl -sS -H 'Content-Type: application/json' -d '${payload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
+            #curl -sS -H 'Content-Type: application/json' -d '${payload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
           """
         }
       }
