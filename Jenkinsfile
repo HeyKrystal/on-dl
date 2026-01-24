@@ -54,7 +54,7 @@ pipeline {
             -v "$PWD:/work" -w /work \
             "$PY_IMAGE" \
             sh -lc '
-              set -eu
+              set -eux
 
               # If an old root-owned cache exists, avoid using it at all.
               # Deleting may fail if it's root-owned; ignore that.
