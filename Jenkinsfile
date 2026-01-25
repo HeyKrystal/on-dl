@@ -226,6 +226,7 @@ pipeline {
               ]
               footer: [ text: "IronKerberos • Jenkins" ]
             ]
+          ]
         ]
 
 
