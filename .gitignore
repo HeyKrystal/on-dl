@@ -8,3 +8,6 @@
 # Python bytecode
 /__pycache__
 *.pyc
+
+# Ignore actual .toml
+config.toml

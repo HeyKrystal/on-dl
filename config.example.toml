@@ -1,0 +1,43 @@
+# OnDL configuration (TOML)
+# Copy to 'config.toml' next to consume.py and customize.
+
+[ondl]
+# Where user-visible downloads go.
+# - Default (blank): ~/Downloads/OnDL
+# - Can be a mounted network share path, e.g. /Volumes/Media/OnDL
+download_root = ""
+
+# Where runtime state goes (queue, logs, previews, yt-dlp archive).
+# - Default (blank): OS-specific (macOS: ~/Library/Application Support/OnDL)
+state_root = ""
+
+[queue]
+max_per_run = 5
+job_glob = "*.dljob"
+
+# Startup reaper...
+stale_processing_minutes = 120
+stale_processing_action = "requeue"  # or "error"
+
+[preview]
+enabled = true
+duration_seconds = 5
+fps = 48
+width = 480
+gif_max_bytes = 8388608  # ~8MB
+
+[discord]
+webhook_url = "" # set this to your Discord webhook URL
+username = "" # sets the username for the sent embed
+avatar_url = "" # sets the avatar on the embed
+author_icon_url = "" sets the author icon on the embed
+
+[tools]
+# Optional explicit tool paths. Prefer env vars for per-host overrides:
+# ONDL_YTDLP, ONDL_FFMPEG, ONDL_FFPROBE, ONDL_CURL
+# Leave empty to auto-resolve via PATH.
+ytdlp = ""
+ffmpeg = ""
+ffprobe = ""
+curl = ""
+
