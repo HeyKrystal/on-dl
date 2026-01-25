@@ -230,12 +230,6 @@ pipeline {
         ])
 
 
-
-        def payload = JsonOutput.toJson([
-          username: "IronKerberos",
-          embeds: [ embed ]
-        ])
-
         withCredentials([string(credentialsId: "${DISCORD_WEBHOOK_CRED}", variable: 'DISCORD_WEBHOOK_URL')]) {
           // Use curl from the agent host (not inside a container)
           sh """
