@@ -208,7 +208,7 @@ pipeline {
           author = "❌ BUILD FAILED"
         }
 
-        def discordPayload = [
+        def discordPayload = JsonOutput.toJson([
           username: "IronKerberos",
           avatar_url: "https://www.testedtechnology.co.uk/wp-content/uploads/2020/12/UnRAID-Icon.png",
           embeds: [
@@ -227,7 +227,7 @@ pipeline {
               footer: [ text: "IronKerberos • Jenkins" ]
             ]
           ]
-        ]
+        ])
 
 
 
