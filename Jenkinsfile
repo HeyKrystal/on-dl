@@ -223,7 +223,7 @@ pipeline {
                 [ name: "Duration", value: "${durSec} seconds", inline: true ],
                 [ name: "Agent", value: agent, inline: true ]
                 [ name: "Git SHA", value: sha, inline: true ],
-              ]
+              ],
               footer: [ text: "IronKerberos • Jenkins" ]
             ]
           ]
