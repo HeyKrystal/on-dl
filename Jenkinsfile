@@ -231,18 +231,6 @@ pipeline {
 
 
 
-        def embed = [
-          author: [ name: author ],
-          description: summary,
-          color: color,
-          footer: [ text: "IronKerberos • Jenkins" ],
-          fields: [
-            [ name: "Job", value: "${env.JOB_NAME}", inline: false ],
-            [ name: "Agent", value: "${env.NODE_NAME ?: 'n/a'}", inline: true ],
-            [ name: "Build #", value: "${env.BUILD_NUMBER}", inline: true ]
-          ]
-        ]
-
         def payload = JsonOutput.toJson([
           username: "IronKerberos",
           embeds: [ embed ]
