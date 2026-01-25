@@ -98,13 +98,11 @@ def load_config(script_path: Path) -> Tuple[OnDLConfig, Path]:
     # Defaults
     cfg = OnDLConfig()
     data: dict = {}
-    cfg_dir = script_dir  # where the config was loaded from
 
     # Prefer local config.toml next to the executing script
     local_cfg = script_dir / "config.toml"
     if local_cfg.exists():
         data = tomllib.loads(local_cfg.read_text(encoding="utf-8"))
-        cfg_dir = local_cfg.parent
     else:
         # Fall back to ONDL_CONFIG env var
         env_cfg = os.environ.get("ONDL_CONFIG", "").strip()
@@ -113,7 +111,6 @@ def load_config(script_path: Path) -> Tuple[OnDLConfig, Path]:
             if not env_path.exists():
                 raise RuntimeError(f"ONDL_CONFIG points to missing file: {env_path}")
             data = tomllib.loads(env_path.read_text(encoding="utf-8"))
-            cfg_dir = env_path.parent
 
     ondl = data.get("ondl", {}) or {}
     tools_tbl = data.get("tools", {}) or {}
