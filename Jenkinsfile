@@ -210,7 +210,7 @@ pipeline {
 
         def discordPayload = [
           username: "IronKerberos",
-          avatar_url: "https://www.testedtechnology.co.uk/wp-content/uploads/2020/12/UnRAID-Icon.png"
+          avatar_url: "https://www.testedtechnology.co.uk/wp-content/uploads/2020/12/UnRAID-Icon.png",
           embeds: [
             [
               author: [ name: author],
