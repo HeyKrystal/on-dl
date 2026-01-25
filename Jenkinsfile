@@ -215,9 +215,10 @@ pipeline {
             [
               author: [ name: author],
               color: color,
-              title: "Job: ${env.JOB_NAME}",
+              title: "Job: ${env.JOB_BASE_NAME}",
               url: "${env.BUILD_URL}",
-              description: "Build has completed with; will think of additional info to compile here later.",
+              description: "Jenkins built commit `${sha}` on branch `${env.BRANCH_NAME}`.\n" +
+                           (deployed == "true" ? "Deployed to *${env.DEPLOY_TARGET}*." : "No deployment performed."),
               fields: [
                 [ name: "Build #", value: env.BUILD_NUMBER, inline: true ],
                 [ name: "Duration", value: "${durSec} seconds", inline: true ],
