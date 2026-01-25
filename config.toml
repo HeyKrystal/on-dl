@@ -6,7 +6,7 @@
 # Where user-visible downloads go.
 # - Default (blank): ~/Downloads/OnDL
 # - Can be a mounted network share path, e.g. /Volumes/PlexMedia/OnDL
-download_root = "/Volumes/Media/Sources/OnDL"
+download_root = "/Volumes/Media/Ingest/OnDL"
 
 # Where runtime state goes (queue, logs, previews, yt-dlp archive).
 # - Default (blank): OS-specific (macOS: ~/Library/Application Support/OnDL)
