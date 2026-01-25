@@ -208,12 +208,27 @@ pipeline {
           author = "❌ BUILD FAILED"
         }
 
-        String summary =
-          "Branch: ${env.BRANCH_NAME}\\n" +
-          "Commit: ${sha}\\n" +
-          "Deployed: ${deployed}" + (env.BRANCH_NAME == 'main' ? " (keep last ${env.KEEP_RELEASES})" : "") + "\\n" +
-          "Duration: ${durSec}s\\n" +
-          "Build: ${env.BUILD_URL}"
+        def discordPayload = [
+          username: "IronKerberos",
+          avatar_url: "https://www.testedtechnology.co.uk/wp-content/uploads/2020/12/UnRAID-Icon.png"
+          embeds: [
+            [
+              author: [ name: author],
+              color: color,
+              title: "Job: ${env.JOB_NAME}",
+              url: "${env.BUILD_URL}",
+              description: "Build has completed with; will think of additional info to compile here later.",
+              fields: [
+                [ name: "Build #", value: env.BUILD_NUMBER, inline: true ],
+                [ name: "Duration", value: "${durSec} seconds", inline: true ],
+                [ name: "Agent", value: agent, inline: true ]
+                [ name: "Git SHA", value: sha, inline: true ],
+              ]
+              footer: [ text: "IronKerberos • Jenkins" ]
+            ]
+        ]
+
+
 
         def embed = [
           author: [ name: author ],
@@ -236,7 +251,7 @@ pipeline {
           // Use curl from the agent host (not inside a container)
           sh """
             set -eux
-            curl -sS -H 'Content-Type: application/json' -d '${payload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
+            curl -sS -H 'Content-Type: application/json' -d '${discordPayload.replace("'", "'\\''")}' "\$DISCORD_WEBHOOK_URL" >/dev/null
           """
         }
       }
