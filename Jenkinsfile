@@ -221,7 +221,7 @@ pipeline {
               fields: [
                 [ name: "Build #", value: env.BUILD_NUMBER, inline: true ],
                 [ name: "Duration", value: "${durSec} seconds", inline: true ],
-                [ name: "Agent", value: agent, inline: true ]
+                [ name: "Agent", value: "${env.NODE_NAME ?: 'n/a'}", inline: true ],
                 [ name: "Git SHA", value: sha, inline: true ],
               ],
               footer: [ text: "IronKerberos • Jenkins" ]
